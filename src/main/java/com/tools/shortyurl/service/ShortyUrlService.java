@@ -33,7 +33,7 @@ public class ShortyUrlService {
         return saved.getShortyUrl();
     }
 
-    public UrlMappings getOriginalUrl(String url) {
-        return shortyUrlRepository.findByShortyUrl(url).orElseThrow(() -> new UrlNotFound("Url not found."));
+    public String getOriginalUrl(String url) {
+        return shortyUrlRepository.findByShortyUrl(url).map(UrlMappings::getOriginalUrl).orElseThrow(() -> new UrlNotFound("Url not found."));
     }
 }

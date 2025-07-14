@@ -1,6 +1,6 @@
 package com.tools.shortyurl.controller;
 
-import com.tools.shortyurl.models.UrlMappings;
+import com.tools.shortyurl.models.DTOs.ResultBody;
 import com.tools.shortyurl.service.ShortyUrlService;
 import com.tools.shortyurl.utils.UrlUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +21,18 @@ public class ShortyController {
 
 
     @PostMapping("/shorty")
-    public ResponseEntity<String> shortUrl(@RequestBody String url) {
+    public ResponseEntity<ResultBody> shortUrl(@RequestBody String url) {
         String shortyUrl = service.getShortyUrl(url);
         String newUrl =utils.getUpdatedUrl(shortyUrl);
-        return new ResponseEntity<>(newUrl, HttpStatus.ACCEPTED);
+        ResultBody resultBody = new ResultBody();
+        resultBody.setShortyLink(newUrl);
+        resultBody.setOriginalLink(url);
+        return new ResponseEntity<>(resultBody, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/{shortyUrl}")
     public ResponseEntity<String> originalUrl(@PathVariable("shortyUrl") String shortyUrl) {
-        UrlMappings urlMappings = service.getOriginalUrl(shortyUrl);
-        String originalUrl = urlMappings.getOriginalUrl();
+        String originalUrl = service.getOriginalUrl(shortyUrl);
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(originalUrl)).build();
     }
 }
